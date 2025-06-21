@@ -55,7 +55,7 @@ app.get("/notes", async(req: Request, res: Response) => {
 })
 
 
-app.get("/notes/noteId", async(req: Request, res: Response) => {
+app.get("/notes/:noteId", async(req: Request, res: Response) => {
     const id = req.params.noteId;
     const note = await Note.findById(id);
 
@@ -65,8 +65,22 @@ app.get("/notes/noteId", async(req: Request, res: Response) => {
     })
 })
 
+app.patch("/notes/:noteId", async(req: Request, res: Response) => {
+    const noteId: String = String(req.params.noteId);
+    const updatedDoc = req.body;
+  await Note.findByIdAndUpdate(noteId, updatedDoc)
+    res.status(200).json({
+        success: true,
+        message: "Successfully updated note",
+        note: await Note.findById(noteId)
+    })
+})
+
 app.get("/", (req: Request, res: Response) => {
     res.send("Hello World!")
 })
+
+
+
 
 export default app;
