@@ -2,6 +2,8 @@ import express, { Application, Request, Response } from "express"
 import { model, Schema } from "mongoose"
 const app: Application = express()
 
+app.use(express.json());
+
 const noteSchema = new Schema({
     title: {
         type: String,
@@ -29,11 +31,11 @@ const noteSchema = new Schema({
 
 const Note = model("Note", noteSchema)
 
-app.post("/create-note", async(req: Request, res: Response) => {
-    const myNote = new Note({
-        title: "Learning Mongoose",
-        content: "I am learning mongoose"
-    })
+
+
+app.post("/notes/create-note", async(req: Request, res: Response) => {
+    const body = req.body;
+    const myNote = new Note(body)
     await myNote.save();
     res.status(201).json({
         success: true,
@@ -42,6 +44,26 @@ app.post("/create-note", async(req: Request, res: Response) => {
     })
 })
 
+app.get("/notes", async(req: Request, res: Response) => {
+    const notes = await Note.find();
+
+    res.json({
+        message: "",
+        success: true,
+        notes
+    })
+})
+
+
+app.get("/notes/noteId", async(req: Request, res: Response) => {
+    const id = req.params.noteId;
+    const note = await Note.findById(id);
+
+    res.json({
+        success: true,
+        note
+    })
+})
 
 app.get("/", (req: Request, res: Response) => {
     res.send("Hello World!")
