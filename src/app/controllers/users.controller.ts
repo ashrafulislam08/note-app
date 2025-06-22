@@ -36,9 +36,9 @@ usersRoutes.get("/:userId", async(req: Request, res: Response) => {
 
 
 usersRoutes.patch("/:userId", async(req: Request, res: Response) => {
-    const userId = req.params.id;
+    const userId = req.params.userId;
     const body = req.body;
-    const user = await User.findByIdAndUpdate(userId, body)
+    const user = await User.findByIdAndUpdate(userId, body, { new: true })
     res.status(201).json({
         success: true,
         message: "user updated successfully",
